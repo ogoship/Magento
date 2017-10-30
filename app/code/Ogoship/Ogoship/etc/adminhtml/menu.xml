@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Ogoship. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Backend/etc/menu.xsd">
+    <menu>
+        <add id="Ogoship_Ogoship::ogoship_ogoshipindex" title="Export Ogoship" module="Ogoship_Ogoship"  sortOrder="20" dependsOnModule="Ogoship_Ogoship" action="ogoship/ogoship/index" resource="Ogoship_Ogoship::ogoship_ogoshipindex"/>
+<!--AddMenu-->
+    </menu>
+</config>

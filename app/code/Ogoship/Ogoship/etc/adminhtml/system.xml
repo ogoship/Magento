@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Config/etc/system_file.xsd">
+    <system>
+        <section id="Ogoship" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Ogoship Configuration</label>
+            <tab>general</tab>
+            <resource>Ogoship_Ogoship::config_Ogoship</resource>
+            <group id="view" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Ogoship Settings</label>
+				<field id="merchant_id" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Merchant id</label>
+                    <comment>Write your comments</comment>
+                </field>
+				<field id="secret_token" translate="label comment" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Secret Token</label>
+                    <comment>Write your comments</comment>
+                </field>
+                <field id="deny_product_export" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Deny product export to Ogoship</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="deny_latest_changes" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Deny latest changes</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+				<field id="ogoship_shipping_method" translate="label" sortOrder="6" showInDefault="1" showInWebsite="0" showInStore="0" canRestore="1">
+                    <label>Ogoship Shipping method</label>
+                    <frontend_model>Ogoship\Ogoship\Block\Adminhtml\Form\Field\Shippingmethods</frontend_model>
+                    <backend_model>Ogoship\Ogoship\Model\System\Config\Backend\Shippingmethods</backend_model>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

@@ -1,0 +1,37 @@
+<?php
+/**
+ * Copyright © 2015 ogoshipcommerce. All rights reserved.
+ */
+?>
+<?php
+/**
+ * {{controller}} {{action}} template
+ *
+ * @var $block \Ogoship\Ogoship\Block\Adminhtml\Ogoship\Index
+ */
+ 
+?>
+<div class="export-Ogoship <?php if ($block->getIsReadonly()): ?>box-left<?php else: ?>box-right<?php endif; ?>">
+	<form id="export_product_form" class="admin__fieldset" action="<?php /* @escapeNotVerified */ echo $block->getUrl('ogoship/ogoship/exportProducts') ?>" method="post" enctype="multipart/form-data">
+		<?php echo $block->getBlockHtml('formkey')?>
+		<div class="fieldset admin__field">
+			<span class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Send Products to Ogoship') ?></span></span>
+			<div class="admin__field-control">
+				<button id="id_ogoship" title="Export Products" type="button" class="action-default scalable" onclick="this.form.submit()" data-ui-id="widget-button-1">
+					<span>Send</span>
+				</button>
+			</div>
+		</div>
+	</form>
+	<form id="export_order_form" class="admin__fieldset" action="<?php /* @escapeNotVerified */ echo $block->getUrl('ogoship/ogoship/importLastChanges') ?>" method="post" enctype="multipart/form-data">
+		<?php echo $block->getBlockHtml('formkey')?>
+		<div class="fieldset admin__field">
+			<span class="admin__field-label"><span><?php /* @escapeNotVerified */ echo __('Update Latest changes from Ogoship') ?></span></span>
+			<div class="admin__field-control">
+				<button id="id_ogoship" title="Update Latest changes from Ogoship" type="button" class="action-default scalable" onclick="this.form.submit()" data-ui-id="widget-button-1">
+					<span>Update</span>
+				</button>
+			</div>
+		</div>
+	</form>
+</div>
