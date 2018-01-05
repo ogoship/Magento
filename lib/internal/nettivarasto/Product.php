@@ -213,6 +213,25 @@ class NettivarastoAPI_Product extends NettivarastoAPI_Object
   {
     return $this->getAttribute('StockAvailable', 0);
   }
+  
+  function setStock($value)
+  {
+    $this->setAttribute('StockAvailable', $value);
+  }
+  
+  /**
+   * Get count of products available in stock.
+   */
+  function getVat()
+  {
+    return $this->getAttribute('VatPercentage', 0);
+  }
+  
+  function setVat($value)
+  {
+    $this->setAttribute('VatPercentage', $value);
+  }
+  
 }
 
 ?>

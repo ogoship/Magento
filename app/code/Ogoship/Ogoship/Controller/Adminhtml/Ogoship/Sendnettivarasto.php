@@ -51,7 +51,8 @@ class Sendnettivarasto extends \Magento\Sales\Controller\Adminhtml\Order
 				    $export_to_ogoship = $_product->getExportToOgoship();
 				    if(empty($export_to_ogoship)){
 					    $order->setOrderLineCode( $index, ($item->getSku()));
-					    $order->setOrderLineQuantity( $index, intval($item->getQtyOrdered()));
+						$order->setOrderLineQuantity( $index, intval($item->getQtyOrdered()));
+						$order->setOrderLinePrice( $index, $item->getPrice());
 					    $index++;
 				    }
 				}

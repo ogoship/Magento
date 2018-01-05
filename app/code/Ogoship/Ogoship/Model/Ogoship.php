@@ -102,12 +102,13 @@ class Ogoship extends \Magento\Framework\DataObject
 		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 		$_productCollection = $objectManager->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
 		$collection = $_productCollection->addAttributeToSelect('*')->load();
+		$NV_products = array();
 		foreach ($collection as $product){
 			$_product = $objectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
 			$export_to_ogoship = $_product->getExportToOgoship();
 			if(empty($export_to_ogoship)){
 				$store = $objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore();
-				$currency_iso_code = $store->getCurrentCurrency()->getCode();
+				$currency_iso_code = $store->getBaseCurrencyCode();
 				$imageUrl = $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'catalog/product' . $_product->getImage();
 				$product_array = array(
 					'Code' => $_product->getSku(),
@@ -142,34 +143,61 @@ class Ogoship extends \Magento\Framework\DataObject
 		if($latestOrders) {
 			foreach($latestOrders as $latestOrder) {
 				$order = $objectManager->create('Magento\Sales\Model\Order')->load($latestOrder->getReference());
+				$objectManager->get('\Psr\Log\LoggerInterface')->debug('state: ' . print_r($order->getState(), true) . " status: " . print_r($order->getStatus(),true));
 				switch ( $latestOrder->getStatus() ) {	
 					 case  'SHIPPED': 
+						$objectManager->get('\Psr\Log\LoggerInterface')->debug('state: ' . print_r($order->getState(), true) . " status: " . print_r($order->getStatus(),true));
+						if($order->getState() != \Magento\Sales\Model\Order::ACTION_FLAG_SHIP)
+						{
+							/*if($order->canShip() == true)
+							{
+								if($latestOrder->getTrackingNumber() != null)
+								{
+									$trackFactory = $objectManager->get('Magento\Sales\Model\Order\Shipment\TrackFactory');
+									$shipmentFactory = $objectManager->get('Magento\Sales\Model\Order\ShipmentFactory');
+									foreach(explode(',', $latestOrder->getTrackingNumber()) as $track)
+									{
+										$objectManager->get('\Psr\Log\LoggerInterface')->debug($latestOrder->getTrackingNumber());
+										$number = array(
+											'carrier_code' => 'Custom',
+											'title' => 'Custom',
+											'number' => $track
+										);
+										$shipment = $shipmentFactory->create($order, array(), '' , false, 0);
+										$trackobj = $trackFactory->create()->addData($number);
+										$shipment->addTrack($trackobj)->save();
+									}
+								}
+							}*/
+						}
 						$order->setState(\Magento\Sales\Model\Order::ACTION_FLAG_SHIP, true);
 						$order->setStatus(\Magento\Sales\Model\Order::ACTION_FLAG_SHIP);
 						$order->addStatusToHistory($order->getStatus(), 'Ogoship change of status to SHIPPED. ');
 						$order->save();
                         break;
                     case  'CANCELLED':
-						$order->setState(\Magento\Sales\Model\Order::STATE_CANCELED, true);
-						$order->setStatus(\Magento\Sales\Model\Order::STATE_CANCELED);
+						//$order->setState(\Magento\Sales\Model\Order::STATE_CANCELED, true);
+						//$order->setStatus(\Magento\Sales\Model\Order::STATE_CANCELED);
 						$order->addStatusToHistory($order->getStatus(), 'Ogoship change of status to CANCELLED. ');
 						$order->save();
                         break;
                     case  'COLLECTING':
-						$order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING, true);
-						$order->setStatus(\Magento\Sales\Model\Order::STATE_PROCESSING);
+						//$order->setState(\Magento\Sales\Model\Order::STATE_PROCESSING, true);
+						//$order->setStatus(\Magento\Sales\Model\Order::STATE_PROCESSING);
 						$order->addStatusToHistory($order->getStatus(), 'Ogoship change of status to COLLECTING. ');
 						$order->save();
                         break;
                     case  'PENDING':
-						$order->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT, true);
-						$order->setStatus(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
+						//$order->setState(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT, true);
+						//$order->setStatus(\Magento\Sales\Model\Order::STATE_PENDING_PAYMENT);
 						$order->addStatusToHistory($order->getStatus(), 'Ogoship change of status to PENDING. ');
 						$order->save();
                         break;
                     case  'RESERVED':
-						$order->setState(\Magento\Sales\Model\Order::STATE_COMPLETE, true);
-						$order->setStatus(\Magento\Sales\Model\Order::STATE_COMPLETE);
+						if($order->canHold() == true){
+							$order->setState(\Magento\Sales\Model\Order::STATE_HOLDED, true);
+							$order->setStatus(\Magento\Sales\Model\Order::STATE_HOLDED);
+						}
 						$order->addStatusToHistory($order->getStatus(), 'Ogoship change of status to RESERVED. ');
 						$order->save();
                         break;
