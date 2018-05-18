@@ -35,6 +35,9 @@
                     <frontend_model>Ogoship\Ogoship\Block\Adminhtml\Form\Field\Shippingmethods</frontend_model>
                     <backend_model>Ogoship\Ogoship\Model\System\Config\Backend\Shippingmethods</backend_model>
                 </field>
+                <field id="ogoship_last_updated" type="text" showInDefault="0" showInWebsite="0" showInStore="0">
+                    <comment>Last successful get latest changes timestamp</comment>
+                </field>
             </group>
         </section>
     </system>

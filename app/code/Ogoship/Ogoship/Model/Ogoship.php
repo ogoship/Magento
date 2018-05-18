@@ -138,15 +138,16 @@ class Ogoship extends \Magento\Framework\DataObject
 		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 		$merchant_id = $objectManager->get('\Ogoship\Ogoship\Model\Ogoship')->getCurrentStoreConfigValue('Ogoship/view/merchant_id');
 		$secret_token = $objectManager->get('\Ogoship\Ogoship\Model\Ogoship')->getCurrentStoreConfigValue('Ogoship/view/secret_token');
-		$api_call = new \NettivarastoAPI($merchant_id, $secret_token);
-		$latest = $api_call->latestChanges($latestProducts, $latestOrders);
+        $api_call = new \NettivarastoAPI($merchant_id, $secret_token);
+        $api_call->setTimestamp($objectManager->get('\Ogoship\Ogoship\Model\Ogoship')->getCurrentStoreConfigValue('Ogoship/view/ogoship_last_updated'));
+        $success = $api_call->latestChanges($latestProducts, $latestOrders);
 		if($latestOrders) {
 			foreach($latestOrders as $latestOrder) {
 				$order = $objectManager->create('Magento\Sales\Model\Order')->load($latestOrder->getReference());
-				$objectManager->get('\Psr\Log\LoggerInterface')->debug('state: ' . print_r($order->getState(), true) . " status: " . print_r($order->getStatus(),true));
+				//$objectManager->get('\Psr\Log\LoggerInterface')->debug('state: ' . print_r($order->getState(), true) . " status: " . print_r($order->getStatus(),true));
 				switch ( $latestOrder->getStatus() ) {	
 					 case  'SHIPPED': 
-						$objectManager->get('\Psr\Log\LoggerInterface')->debug('state: ' . print_r($order->getState(), true) . " status: " . print_r($order->getStatus(),true));
+						//$objectManager->get('\Psr\Log\LoggerInterface')->debug('state: ' . print_r($order->getState(), true) . " status: " . print_r($order->getStatus(),true));
 						if($order->getState() != \Magento\Sales\Model\Order::ACTION_FLAG_SHIP)
 						{
 							/*if($order->canShip() == true)
@@ -215,7 +216,12 @@ class Ogoship extends \Magento\Framework\DataObject
 					}
 				}
 			 }
-		}
+        }
+        if($success == true)
+        {
+            $latest = $api_call->getTimestamp();
+            $objectManager->get('\Ogoship\Ogoship\Model\Ogoship')->setCurrentStoreConfigValue('Ogoship/view/ogoship_last_updated', $latest);
+        }
 		return true;
 	}
 	
