@@ -29,7 +29,7 @@ class SalesOrderInvoicePay implements ObserverInterface {
     public function execute(EventObserver $observer) {
         $event = $observer->getEvent()->getOrder();
         $orderId = $event->getId();
-        return $this->getUrl('ogoship/ogoship/sendnettivarasto', ['order_id' => $orderId]);
+        return $this->_url->getUrl('ogoship/ogoship/sendnettivarasto', ['order_id' => $orderId]);
     }
 
 }
