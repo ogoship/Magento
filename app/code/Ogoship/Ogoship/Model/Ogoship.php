@@ -138,12 +138,14 @@ class Ogoship extends \Magento\Framework\DataObject
 		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 		$merchant_id = $objectManager->get('\Ogoship\Ogoship\Model\Ogoship')->getCurrentStoreConfigValue('Ogoship/view/merchant_id');
 		$secret_token = $objectManager->get('\Ogoship\Ogoship\Model\Ogoship')->getCurrentStoreConfigValue('Ogoship/view/secret_token');
+        $latest = $objectManager->get('\Ogoship\Ogoship\Model\Ogoship')->getCurrentStoreConfigValue('Ogoship/view/ogoship_last_updated');
         $api_call = new \NettivarastoAPI($merchant_id, $secret_token);
-        $api_call->setTimestamp($objectManager->get('\Ogoship\Ogoship\Model\Ogoship')->getCurrentStoreConfigValue('Ogoship/view/ogoship_last_updated'));
+        $api_call->setTimestamp($latest);
+        //$objectManager->get('\Psr\Log\LoggerInterface')->debug('latest: ' . print_r($latest, true));
         $success = $api_call->latestChanges($latestProducts, $latestOrders);
 		if($latestOrders) {
 			foreach($latestOrders as $latestOrder) {
-				$order = $objectManager->create('Magento\Sales\Model\Order')->load($latestOrder->getReference());
+				$order = $objectManager->create('Magento\Sales\Model\Order')->loadByIncrementId($latestOrder->getReference());
 				//$objectManager->get('\Psr\Log\LoggerInterface')->debug('state: ' . print_r($order->getState(), true) . " status: " . print_r($order->getStatus(),true));
 				switch ( $latestOrder->getStatus() ) {	
 					 case  'SHIPPED': 

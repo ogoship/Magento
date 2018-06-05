@@ -15,21 +15,35 @@ class SalesOrderInvoicePay implements ObserverInterface {
     protected $_redirect;
     protected $_url;
     private $_send;
+    protected $_objectmanager;
 
     public function __construct(
     \Magento\Framework\App\Action\Context $context, \Magento\Framework\App\Response\Http $redirect, \Magento\Framework\UrlInterface $url,
-             \Ogoship\Ogoship\Controller\Adminhtml\Ogoship\Sendnettivarasto $send
+             \Ogoship\Ogoship\Controller\Adminhtml\Ogoship\Sendnettivarasto $send, \Magento\Framework\ObjectManagerInterface $objectmanager
     ) {
-        parent::__construct($context);
+        //parent::__construct($context);
         $this->_send = $send;
         $this->_redirect = $redirect;
         $this->_url = $url;
+        $this->_objectmanager = $objectmanager::getInstance();
     }
 
     public function execute(EventObserver $observer) {
-        $event = $observer->getEvent()->getOrder();
-        $orderId = $event->getId();
-        return $this->_url->getUrl('ogoship/ogoship/sendnettivarasto', ['order_id' => $orderId]);
+        // skip automatic sending if in adminhtml
+        if($this->is_admin()){
+            return;
+        }
+        $event = $observer->getEvent();
+        $invoice = $event->getInvoice();
+        $order  = $invoice->getOrder();
+        $orderId = $order->getIncrementId();
+        $quote = $this->_objectmanager->create('Magento\Checkout\Model\Cart')->getQuote();
+        $this->_send->create($orderId, $quote);
+        $this->_send->execute();
     }
 
+    function is_admin() {
+        $state =  $this->_objectmanager->get('Magento\Framework\App\State');
+        return 'adminhtml' === $state->getAreaCode();
+    }
 }
