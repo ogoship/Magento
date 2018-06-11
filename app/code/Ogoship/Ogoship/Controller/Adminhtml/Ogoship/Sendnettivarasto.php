@@ -63,13 +63,13 @@ class Sendnettivarasto extends \Magento\Sales\Controller\Adminhtml\Order
 					} else {
                         if($this->is_admin())
                         {
-						$this->messageManager->addSuccess(__('Order Shipping method not enabled in settings'));
+						$this->messageManager->addError(__('Order Shipping method not enabled in settings'));
 						return $resultRedirect->setPath('sales/order/view', ['order_id' => $_order->getId()]);
                         }
                         return;
 					}
 				}
-				$orderItems = isset($this->_quote) ? $this->_quote->getAllVisibleItems() : $_order->getAllItems();
+				$orderItems = isset($this->_quote) ? $this->_quote->getAllVisibleItems() : $_order->getAllVisibleItems();
 				$shippingAddress = isset($this->_quote) ? $this->_quote->getShippingAddress() : $_order->getShippingAddress();
 				$index=0;
 				foreach ($orderItems as $item) {
@@ -79,7 +79,7 @@ class Sendnettivarasto extends \Magento\Sales\Controller\Adminhtml\Order
                     file_put_contents('php://stderr', "export: " . $item->getSku() . " : " . $export_to_ogoship . "\n");
 				    if(empty($export_to_ogoship)){
 					    $order->setOrderLineCode( $index, ($item->getSku()));
-						$order->setOrderLineQuantity( $index, intval($item->getQtyOrdered()));
+						$order->setOrderLineQuantity( $index, empty($item->getQtyOrdered()) ? intval($item->getQty()) : intval($item->getQtyOrdered()));
 						$order->setOrderLinePrice( $index, $item->getPrice());
 					    $index++;
 				    }

@@ -141,37 +141,66 @@ class Ogoship extends \Magento\Framework\DataObject
         $latest = $objectManager->get('\Ogoship\Ogoship\Model\Ogoship')->getCurrentStoreConfigValue('Ogoship/view/ogoship_last_updated');
         $api_call = new \NettivarastoAPI($merchant_id, $secret_token);
         $api_call->setTimestamp($latest);
-        //$objectManager->get('\Psr\Log\LoggerInterface')->debug('latest: ' . print_r($latest, true));
         $success = $api_call->latestChanges($latestProducts, $latestOrders);
 		if($latestOrders) {
 			foreach($latestOrders as $latestOrder) {
-				$order = $objectManager->create('Magento\Sales\Model\Order')->loadByIncrementId($latestOrder->getReference());
-				//$objectManager->get('\Psr\Log\LoggerInterface')->debug('state: ' . print_r($order->getState(), true) . " status: " . print_r($order->getStatus(),true));
+                //$objectManager->get('\Psr\Log\LoggerInterface')->debug('latest: ' . print_r($latestOrder, true));
+                $order = $objectManager->create('Magento\Sales\Model\Order')->loadByIncrementId($latestOrder->getReference());
+                if(!(isset($order) && $order->getId() > 0))
+                {
+                    $objectManager->get('\Psr\Log\LoggerInterface')->error("OGOship: Order with reference " . $latestOrder->getReference() . " not found, skipping");
+                    continue;
+                }
 				switch ( $latestOrder->getStatus() ) {	
 					 case  'SHIPPED': 
-						//$objectManager->get('\Psr\Log\LoggerInterface')->debug('state: ' . print_r($order->getState(), true) . " status: " . print_r($order->getStatus(),true));
 						if($order->getState() != \Magento\Sales\Model\Order::ACTION_FLAG_SHIP)
 						{
-							/*if($order->canShip() == true)
+							if($order->canShip() == true)
 							{
 								if($latestOrder->getTrackingNumber() != null)
 								{
+                                    $convertOrder = $objectManager->create('Magento\Sales\Model\Convert\Order');
 									$trackFactory = $objectManager->get('Magento\Sales\Model\Order\Shipment\TrackFactory');
-									$shipmentFactory = $objectManager->get('Magento\Sales\Model\Order\ShipmentFactory');
-									foreach(explode(',', $latestOrder->getTrackingNumber()) as $track)
-									{
-										$objectManager->get('\Psr\Log\LoggerInterface')->debug($latestOrder->getTrackingNumber());
+                                    $shipment = $convertOrder->toShipment($order);
+                                    
+                                    $lines = $latestOrder->getOrderLines();
+                                    if(isset($lines["OrderLine"][1])){
+                                        $lines = $lines["OrderLine"];
+                                    }
+
+                                    foreach($lines as $line)
+                                    {
+                                        $sku = isset($line['Code']) ? $line['Code'] : null;
+
+                                        if(!$sku){
+                                            continue;
+                                        }
+
+                                        foreach($order->getAllVisibleItems() as $item)
+                                        {
+                                            if($item->getSku() == $sku)
+                                            {
+                                                $shipItem = $convertOrder->itemToShipmentItem($item)->setQty($line['Quantity']);
+                                                $shipment->addItem($shipItem);
+                                            }
+                                        }
+                                    }
+
+									//$objectManager->get('\Psr\Log\LoggerInterface')->debug("Tracking: " . $latestOrder->getTrackingNumber());
+                                    foreach(explode(',', $latestOrder->getTrackingNumber()) as $track)
+                                    {
 										$number = array(
 											'carrier_code' => 'Custom',
-											'title' => 'Custom',
+											'title' => str_replace('()', '', $latestOrder->getShipping()),
 											'number' => $track
 										);
-										$shipment = $shipmentFactory->create($order, array(), '' , false, 0);
 										$trackobj = $trackFactory->create()->addData($number);
-										$shipment->addTrack($trackobj)->save();
-									}
+										$shipment->addTrack($trackobj);//->save();
+                                    }
+                                    $shipment->register();
+                                    $shipment->save();
 								}
-							}*/
+							}
 						}
 						$order->setState(\Magento\Sales\Model\Order::ACTION_FLAG_SHIP, true);
 						$order->setStatus(\Magento\Sales\Model\Order::ACTION_FLAG_SHIP);
@@ -197,10 +226,10 @@ class Ogoship extends \Magento\Framework\DataObject
 						$order->save();
                         break;
                     case  'RESERVED':
-						if($order->canHold() == true){
-							$order->setState(\Magento\Sales\Model\Order::STATE_HOLDED, true);
-							$order->setStatus(\Magento\Sales\Model\Order::STATE_HOLDED);
-						}
+						//if($order->canHold() == true){
+						//	$order->setState(\Magento\Sales\Model\Order::STATE_HOLDED, true);
+						//	$order->setStatus(\Magento\Sales\Model\Order::STATE_HOLDED);
+						//}
 						$order->addStatusToHistory($order->getStatus(), 'Ogoship change of status to RESERVED. ');
 						$order->save();
                         break;
