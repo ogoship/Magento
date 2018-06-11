@@ -150,6 +150,14 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   }
   
   /**
+   * Set price currency.
+   */
+  function setPriceCurrency($value)
+  {
+    $this->setAttribute('PriceCurrency', $value);
+  }
+  
+  /**
    * Warehouse will assign tracking number when available.
    */
   function getTrackingNumber()
@@ -172,7 +180,17 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   {
     $this->setAttribute('Comments', $value);
   }
-  
+
+  function getPickUpPointCode($value)
+  {
+      $this->getAttribute('PickUpPointCode', $value);
+  }
+
+  function setPickUpPointCode($value)
+  {
+      $this->setAttribute('PickUpPointCode', $value);
+  }
+
   /**
    * Set to true for testing purposes.
    * 
@@ -368,7 +386,12 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   {
     $this->setAttribute("OrderLine[$index]::UnitPrice", $value);
   }
-  
+
+  function getOrderLines()
+  {
+    return $this->getAttribute('OrderLines');
+  }
+
   /**
    * Get documents.
    * 
