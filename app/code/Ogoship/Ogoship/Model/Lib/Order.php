@@ -354,6 +354,12 @@ class NettivarastoAPI_Order extends \Ogoship\Ogoship\Model\Lib\Object
     $this->setAttribute("OrderLine[$index]::Quantity", $value);
   }
   
+  public function getOrderLines()
+  {
+    return $this->getAttribute("OrderLines");
+  }
+
+
   /**
    * Get documents.
    * 
