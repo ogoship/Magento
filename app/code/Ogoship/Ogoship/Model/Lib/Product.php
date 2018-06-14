@@ -2,7 +2,7 @@
 
 namespace Ogoship\Ogoship\Model\Lib;
 
-use Ogoship\Ogoship\Model\Lib\REST-client;
+use Ogoship\Ogoship\Model\Lib\RESTclient;
 
 class NettivarastoAPI_Product extends \Ogoship\Ogoship\Model\Lib\Object
 {

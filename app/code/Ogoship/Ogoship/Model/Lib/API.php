@@ -3,7 +3,7 @@
 namespace Ogoship\Ogoship\Model\Lib;
 use Ogoship\Ogoship\Model\Lib\Order;
 use Ogoship\Ogoship\Model\Lib\Product;
-use Ogoship\Ogoship\Model\Lib\REST-client;
+use Ogoship\Ogoship\Model\Lib\RESTclient;
 
 
 class NettivarastoAPI 

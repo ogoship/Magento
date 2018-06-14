@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Object.php';
-require_once 'REST-client.php';
+require_once 'RESTclient.php';
 
 class NettivarastoAPI_Product extends NettivarastoAPI_Object
 {

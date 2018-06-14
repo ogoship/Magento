@@ -2,7 +2,7 @@
 
 require_once 'Order.php';
 require_once 'Product.php';
-require_once 'REST-client.php';
+require_once 'RESTclient.php';
 
 class NettivarastoAPI
 {
