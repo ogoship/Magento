@@ -99,7 +99,7 @@ class Context extends \Magento\Framework\View\Element\Template\Context
         \Magento\Framework\View\Element\Template\File\Validator $validator,
         \Ogoship\Ogoship\Helper\Data $devToolHelper,
         \Magento\Framework\Registry $registry,
-		\Ogoship\Ogoship\Model\Config $config,
+		\Ogoship\Ogoship\Model\Ogoship $config,
 		\Magento\Framework\ObjectManagerInterface $objectManager,
 		\Magento\Framework\UrlFactory $urlFactory
     ) {
