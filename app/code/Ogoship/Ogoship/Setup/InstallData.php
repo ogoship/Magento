@@ -52,7 +52,7 @@ class InstallData implements InstallDataInterface
                 'type' => 'int',/* Data type in which formate your value save in database*/
                 'backend' => '',
                 'frontend' => '',
-                'label' => 'Export To Ogoship', /* lablel of your attribute*/
+                'label' => 'Deny Export To Ogoship', /* lablel of your attribute*/
                 'input' => 'boolean',
                 'class' => '',
                 'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',
