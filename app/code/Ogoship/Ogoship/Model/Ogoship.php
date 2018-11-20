@@ -189,15 +189,21 @@ class Ogoship extends \Magento\Framework\DataObject
 									//$objectManager->get('\Psr\Log\LoggerInterface')->debug("Tracking: " . $latestOrder->getTrackingNumber());
                                     foreach(explode(',', $latestOrder->getTrackingNumber()) as $track)
                                     {
-										$number = array(
-											'carrier_code' => 'Custom',
-											'title' => str_replace('()', '', $latestOrder->getShipping()),
-											'number' => $track
-										);
-										$trackobj = $trackFactory->create()->addData($number);
-										$shipment->addTrack($trackobj);//->save();
+                                        if($track != null && $track != '')
+                                        {
+                                            $number = array(
+                                                'carrier_code' => 'Custom',
+                                                'title' => str_replace('()', '', $latestOrder->getShipping()),
+                                                'number' => $track
+                                            );
+                                            $trackobj = $trackFactory->create()->addData($number);
+                                            $shipment->addTrack($trackobj);//->save();
+                                        }
                                     }
                                     $shipment->register();
+                                    // send notification mail
+                                    //$objectManager->create('Magento\Shipping\Model\ShipmentNotifier')->notify($shipment);
+
                                     $shipment->save();
 								}
 							}
