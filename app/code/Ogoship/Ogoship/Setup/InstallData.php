@@ -42,7 +42,7 @@ class InstallData implements InstallDataInterface
         /**
          * Add attributes to the eav/attribute
          */
-        $eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY,'yourcustomattribute_id');
+        //$eavSetup->removeAttribute(\Magento\Catalog\Model\Product::ENTITY,'yourcustomattribute_id');
         $eavSetup->addAttribute(
             \Magento\Catalog\Model\Product::ENTITY,
             'export_to_ogoship',/* Custom Attribute Code */

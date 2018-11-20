@@ -31,7 +31,7 @@ class Sendnettivarasto extends \Magento\Sales\Controller\Adminhtml\Order
     {
 		$resultRedirect = $this->resultRedirectFactory->create();
 		$order_id = $this->getRequest()->getParam('order_id');
-        file_put_contents('php://stderr', "order_id: " . $order_id . "\n");
+        //file_put_contents('php://stderr', "order_id: " . $order_id . "\n");
         if (empty($this->_increment_id) && empty($order_id)) {
                 $this->messageManager->addError(__("No order found to send."));
             return $resultRedirect->setPath('sales/*/');
@@ -76,7 +76,7 @@ class Sendnettivarasto extends \Magento\Sales\Controller\Adminhtml\Order
 				    $product_id = $objectManager->get('Magento\Catalog\Model\Product')->getIdBySku($item->getSku());
 				    $_product = $objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
 				    $export_to_ogoship = $_product->getExportToOgoship();
-                    file_put_contents('php://stderr', "export: " . $item->getSku() . " : " . $export_to_ogoship . "\n");
+                    //file_put_contents('php://stderr', "export: " . $item->getSku() . " : " . $export_to_ogoship . "\n");
 				    if(empty($export_to_ogoship)){
 					    $order->setOrderLineCode( $index, ($item->getSku()));
 						$order->setOrderLineQuantity( $index, empty($item->getQtyOrdered()) ? intval($item->getQty()) : intval($item->getQtyOrdered()));
@@ -85,7 +85,8 @@ class Sendnettivarasto extends \Magento\Sales\Controller\Adminhtml\Order
 				    }
 				}
 				
-				$order->setPriceTotal($_order->getGrandTotal());
+                $order->setPriceTotal(isset($_quote) ? $_quote->getGrandTotal() : $_order->getGrandTotal());
+                $order->setPriceCurrency(isset($_quote) ? $_quote->getQuoteCurrencyCode() : $_order->getOrderCurrencyCode());
 				$order->setCustomerName($shippingAddress->getFirstname().' '.$shippingAddress->getLastname());
 				$order->setCustomerAddress1($shippingAddress->getStreet());
 				$order->setCustomerAddress2('');
