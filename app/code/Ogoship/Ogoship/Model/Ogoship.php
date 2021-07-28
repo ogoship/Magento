@@ -244,14 +244,17 @@ class Ogoship extends \Magento\Framework\DataObject
 		}
 		if($latestProducts) {
 			 foreach($latestProducts as $latestProduct) {
-				$product_id = $objectManager->get('Magento\Catalog\Model\Product')->getIdBySku($latestProduct->getCode());
-				$_product = $objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
-				if(!empty($_product)){
-					if ($latestProduct->getStock()) {
-						$_product->setQuantityAndStockStatus(['qty' => $latestProduct->getStock(), 'is_in_stock' => 1]);
-						$_product->save();
-					}
-				}
+                $product_id = $objectManager->get('Magento\Catalog\Model\Product')->getIdBySku($latestProduct->getCode());
+                if(!empty($product_id))
+                {
+				    $_product = $objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
+				    if(!empty($_product)){
+					    if ($latestProduct->getStock()) {
+					    	$_product->setQuantityAndStockStatus(['qty' => $latestProduct->getStock(), 'is_in_stock' => 1]);
+					    	$_product->save();
+					    }
+                    }
+                }
 			 }
         }
         if($success == true)
