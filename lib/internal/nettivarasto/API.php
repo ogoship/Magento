@@ -2,7 +2,7 @@
 
 require_once 'Order.php';
 require_once 'Product.php';
-require_once 'RESTclient.php';
+require_once 'REST-client.php';
 
 class NettivarastoAPI
 {
@@ -10,11 +10,13 @@ class NettivarastoAPI
   private $secretToken = '';
   private $timestamp = 0;
   private $error = '';
+  public $pluginVersion = '';
   
-  function __construct($merchantID, $secretToken)
+  function __construct($merchantID, $secretToken, $pluginVersion = '')
   {
     $this->merchantID = $merchantID;
     $this->secretToken = $secretToken;
+    $this->pluginVersion = $pluginVersion;
   }
 
   function setTimestamp($timestamp)
@@ -46,6 +48,10 @@ class NettivarastoAPI
   	$strParameters = array("product","all");
     $restClient = new NettivarastoAPI_RESTclient($this, 'POST', '/Products', $strParameters);
     $restClient->setPostData($products);
+    if($this->pluginVersion !== '')
+    {
+        $restClient->setVersion($this->pluginVersion);
+    }
     $resultArray = array();
     $success = $restClient->execute($resultArray);
     return $resultArray;
@@ -68,6 +74,10 @@ class NettivarastoAPI
     } else {
       $restClient = new NettivarastoAPI_RESTclient($this, 'GET', '/LatestChanges', array('order','latestchanges', $this->timestamp));
       $restClient->addGetParameter('TimeStamp', $this->timestamp);
+    }
+    if($this->pluginVersion !== '')
+    {
+        $restClient->setVersion($this->pluginVersion);
     }
     $resultArray = array();
     $success = $restClient->execute($resultArray);
@@ -176,9 +186,6 @@ class NettivarastoAPI
   
   function getSHA1($parameters)
   {
-    /// \todo REMOVE
-    //return 'Dem0';
-	//$parameters = array("product","all");
     return sha1(implode(',', $parameters) . ',' . $this->secretToken);
   }
   function getProduct($productCode, &$product)

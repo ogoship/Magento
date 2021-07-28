@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Object.php';
-require_once 'RESTclient.php';
+require_once 'REST-client.php';
 
 class NettivarastoAPI_Product extends NettivarastoAPI_Object
 {
@@ -231,7 +231,34 @@ class NettivarastoAPI_Product extends NettivarastoAPI_Object
   {
     $this->setAttribute('VatPercentage', $value);
   }
-  
+  function getCustomsDescription()
+  {
+    return $this->getAttribute('CustomsDescription');
+  }
+
+  function setCustomsDescription()
+  {
+    $this->setAttribute('CustomsDescription', $value);
+  }
+  function getCountryOfOrigin()
+  {
+    return $this->getAttribute('CountryOfOrigin');
+  }
+
+  function setCountryOfOrigin()
+  {
+    $this->setAttribute('CountryOfOrigin', $value);
+  }
+  function getHsCode()
+  {
+    return $this->getAttribute('HsCode');
+  }
+
+  function setHsCode()
+  {
+    $this->setAttribute('HsCode', $value);
+  }
+
 }
 
 ?>

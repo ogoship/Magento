@@ -1,7 +1,7 @@
 <?php
 
 require_once 'Object.php';
-require_once 'RESTclient.php';
+require_once 'REST-client.php';
 
 class NettivarastoAPI_Order extends NettivarastoAPI_Object
 {
@@ -98,7 +98,17 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   {
     $this->setAttribute('Shipping', $value);
   }
+
+  function getShippingCode()
+  {
+    return $this->getAttribute('ShippingCode');
+  }
   
+  function setShippingCode($value)
+  {
+    $this->setAttribute('ShippingCode', $value);
+  }
+
   /**
    * Get reference number of order.
    */
@@ -266,6 +276,22 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
   }
   
   /**
+   * Get company of customer.
+   */
+  function getCustomerCompany()
+  {
+    return $this->getAttribute("Customer::Company");
+  }
+  
+  /**
+   * Set company of customer.
+   */
+  function setCustomerCompany($value)
+  {
+    $this->setAttribute("Customer::Company", $value);
+  }
+  
+  /**
    * Get country of customer.
    */
   function getCustomerCountry()
@@ -412,6 +438,38 @@ class NettivarastoAPI_Order extends NettivarastoAPI_Object
     $this->setAttribute('Documents', $value);
     
     /// \todo If given when updating order then all documents will be replaced with the ones sent with update.
+  }
+  
+  /**
+   * Get url of document.
+   */
+  function getDocumentURL($index)
+  {
+    return $this->getAttribute("Documents::Document[$index]::URL");
+  }
+  
+  /**
+   * Set url of document.
+   */
+  function setDocumentURL($index,$value)
+  {
+    $this->setAttribute("Documents::Document[$index]::URL", $value);
+  }
+  
+  /**
+   * Get url of document.
+   */
+  function getDocumentType($index)
+  {
+    return $this->getAttribute("Documents::Document[$index]::Type");
+  }
+  
+  /**
+   * Set url of document.
+   */
+  function setDocumentType($index,$value)
+  {
+    $this->setAttribute("Documents::Document[$index]::Type", $value);
   }
 }
 
