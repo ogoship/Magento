@@ -163,6 +163,7 @@ class Ogoship extends \Magento\Framework\DataObject
 									$trackFactory = $objectManager->get('Magento\Sales\Model\Order\Shipment\TrackFactory');
                                     $shipment = $convertOrder->toShipment($order);
                                     
+									$shipment->getOrder()->setIsInProcess(true);
                                     $lines = $latestOrder->getOrderLines();
                                     if(isset($lines["OrderLine"][1])){
                                         $lines = $lines["OrderLine"];
@@ -180,6 +181,9 @@ class Ogoship extends \Magento\Framework\DataObject
                                         {
                                             if($item->getSku() == $sku)
                                             {
+                                            if (! $item->getQtyToShip() || $item->getIsVirtual()) {
+                                                    continue;
+                                            }
                                                 $shipItem = $convertOrder->itemToShipmentItem($item)->setQty($line['Quantity']);
                                                 $shipment->addItem($shipItem);
                                             }
@@ -187,6 +191,7 @@ class Ogoship extends \Magento\Framework\DataObject
                                     }
 
 									//$objectManager->get('\Psr\Log\LoggerInterface')->debug("Tracking: " . $latestOrder->getTrackingNumber());
+									//$trackUrl = $latestOrder->getTrackingUrl();
                                     foreach(explode(',', $latestOrder->getTrackingNumber()) as $track)
                                     {
                                         if($track != null && $track != '')
@@ -196,6 +201,8 @@ class Ogoship extends \Magento\Framework\DataObject
                                                 'title' => str_replace('()', '', $latestOrder->getShipping()),
                                                 'number' => $track
                                             );
+										//if(!empty($trackUrl))
+										//	$number["url"] = $trackUrl;
                                             $trackobj = $trackFactory->create()->addData($number);
                                             $shipment->addTrack($trackobj);//->save();
                                         }
@@ -208,8 +215,8 @@ class Ogoship extends \Magento\Framework\DataObject
 								}
 							}
 						}
-						$order->setState(\Magento\Sales\Model\Order::ACTION_FLAG_SHIP, true);
-						$order->setStatus(\Magento\Sales\Model\Order::ACTION_FLAG_SHIP);
+						$order->setState(\Magento\Sales\Model\Order::STATE_COMPLETE, true);
+						$order->setStatus(\Magento\Sales\Model\Order::STATE_COMPLETE);
 						$order->addStatusToHistory($order->getStatus(), 'Ogoship change of status to SHIPPED. ');
 						$order->save();
                         break;
