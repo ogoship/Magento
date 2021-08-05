@@ -37,9 +37,12 @@ class SalesOrderInvoicePay implements ObserverInterface {
         $invoice = $event->getInvoice();
         $order  = $invoice->getOrder();
         $orderId = $order->getIncrementId();
+        if($this->_objectmanager == null){
+    		$this->_objectmanager = \Magento\Framework\App\ObjectManager::getInstance();
+        }
         $quote = $this->_objectmanager->create('Magento\Checkout\Model\Cart')->getQuote();
-        $this->_send->create($orderId, $quote);
-        $this->_send->execute();
+        $this->_send->createorder($orderId, $quote, $order);
+        $this->_send->sendorder();
     }
 
     function is_admin() {
