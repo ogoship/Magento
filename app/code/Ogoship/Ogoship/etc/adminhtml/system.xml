@@ -16,11 +16,11 @@
                 <label>Ogoship Settings</label>
 				<field id="merchant_id" translate="label comment" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Merchant id</label>
-                    <comment>Write your comments</comment>
+                    <comment>Merchant id from Ogoship</comment>
                 </field>
 				<field id="secret_token" translate="label comment" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Secret Token</label>
-                    <comment>Write your comments</comment>
+                    <comment>Merchant secret token from Ogoship</comment>
                 </field>
                 <field id="deny_product_export" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Deny product export to Ogoship</label>
